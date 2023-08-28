@@ -67,7 +67,12 @@ public class Main {
                 case 4:
 
                     System.out.println("Ingrese rut del paciente al que se le asignara la cita: ");
-                    rutPaciente = lector.readLine();
+                    String rut = lector.readLine();
+                    if(!sistema.existePaciente(rut)) {
+                        System.out.println("El paciente no existe, volviendo al menú principal");
+                        System.out.println("");
+                        continue;
+                    }
 
 
                     System.out.println("Ingrese nombre del medico: ");
@@ -84,8 +89,9 @@ public class Main {
 
                     System.out.println("Ingrese la descripcion: ");
                     String descripcion = lector.readLine();
+                    ConsultaMedica consultaAux = new ConsultaMedica(medico, hora, fecha, motivo, descripcion);
 
-                    sistema.agregarCita(new ConsultaMedica(medico, hora, fecha, motivo, descripcion));
+                    sistema.agregarCita(consultaAux,rut);
                     break;
                 case 5:
 
@@ -97,7 +103,7 @@ public class Main {
                     sistema.mostrarPacientes();
                     break;
                 case 8:
-
+                    sistema.listarConsultasPorPaciente();
                     break;
                 case 9:
                     System.out.println("Saliendo del programa...");

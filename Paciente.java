@@ -1,14 +1,16 @@
+import java.util.*;
 public class Paciente {
     private String nombre;
     private int edad;
     private String rut;
-    ConsultaMedica[] consultas;
+
+    ArrayList<ConsultaMedica> consultas;
 
     public Paciente(String var1, int var2, String var3) {
         this.nombre = var1;
         this.edad = var2;
         this.rut = var3;
-        this.consultas = new ConsultaMedica[30];
+        this.consultas = new ArrayList<>();
     }
 
     public void setNombre(String var1) {
