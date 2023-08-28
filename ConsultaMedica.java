@@ -1,11 +1,16 @@
 public class ConsultaMedica {
-    private String descripcion;
+    private String medico;
     private String hora;
     private String fecha;
-    private String medico;
     private String motivoVisita;
+    private String descripcion;
 
-    public ConsultaMedica() {
+    public ConsultaMedica(String medico, String hora, String fecha, String motivoVisita, String descripcion) {
+        this.medico = medico;
+        this.hora = hora;
+        this.fecha = fecha;
+        this.motivoVisita = motivoVisita;
+        this.descripcion = descripcion;
     }
 
     public void setDescripcion(String var1) {

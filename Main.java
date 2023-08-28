@@ -66,6 +66,26 @@ public class Main {
                     break;
                 case 4:
 
+                    System.out.println("Ingrese rut del paciente al que se le asignara la cita: ");
+                    rutPaciente = lector.readLine();
+
+
+                    System.out.println("Ingrese nombre del medico: ");
+                    String medico = lector.readLine();
+
+                    System.out.println("Ingrese la hora de la cita: ");
+                    String hora = lector.readLine();
+
+                    System.out.println("Ingrese la fecha de la cita: ");
+                    String fecha = lector.readLine();
+
+                    System.out.println("Ingrese el motivo de la cita: ");
+                    String motivo = lector.readLine();
+
+                    System.out.println("Ingrese la descripcion: ");
+                    String descripcion = lector.readLine();
+
+                    sistema.agregarCita(new ConsultaMedica(medico, hora, fecha, motivo, descripcion));
                     break;
                 case 5:
 
