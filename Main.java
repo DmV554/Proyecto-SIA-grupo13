@@ -68,6 +68,7 @@ public class Main {
                     
                     break;
                 case 9:
+                    System.out.println("Saliendo del programa...");
                     System.exit(0);
                     break;
                 default:

@@ -1,45 +1,38 @@
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Sistema {
-    ArrayList<Paciente> listaPacientes = new ArrayList<>();
+    Map<String, Paciente> mapaPacientes = new HashMap<String, Paciente>();
 
     public Sistema() {
     }
 
     public void agregarPaciente(Paciente paciente) {
-        if(listaPacientes.isEmpty()) {
-            listaPacientes.add(paciente);
+        if(mapaPacientes.containsKey(paciente.getRut())) {
+            System.out.println("El paciente ya existe, volviendo al menu principal");
+        } else {
+            mapaPacientes.put(paciente.getRut(), paciente);
             System.out.println("Paciente agregado");
-            System.out.println("");
-            return;
         }
-
-        listaPacientes.add(paciente);
-        System.out.println("Paciente agregado");
+        System.out.println("");
     }
 
     public boolean existePaciente(String rutBuscado) {
         Paciente primerPaciente;
-
-        int indice = 0;
-        while(listaPacientes.size() > indice) {
-            primerPaciente = listaPacientes.get(indice);
-            if(primerPaciente.getRut().equals(rutBuscado)) {
-                System.out.println("El paciente ya existe, volviendo al menu principal");
-                System.out.println("");
-                return false;
-            }
-
-            indice++; 
+        if (mapaPacientes.containsKey(rutBuscado)) {
+            System.out.println("El paciente ya existe, volviendo al menú principal");
+            System.out.println("");
+            return false;
         }
         return true;
     }
+
 
     public void eliminarPaciente() {
     }
 
     public void mostrarPacientes() {
-        if(listaPacientes.isEmpty()) {
+        if (mapaPacientes.isEmpty()) {
             System.out.println("No hay pacientes registrados");
             System.out.println("");
             return;
@@ -48,11 +41,10 @@ public class Sistema {
         Paciente primerPaciente;
 
         int indice = 0;
-        while(listaPacientes.size() > indice) {
-            primerPaciente = listaPacientes.get(indice);
-            System.out.println("Nombre: " + primerPaciente.getNombre());
-            System.out.println("Edad: " + primerPaciente.getEdad());
-            System.out.println("Rut: " + primerPaciente.getRut());
+        for (Paciente paciente : mapaPacientes.values()) {
+            System.out.println("Nombre: " + paciente.getNombre());
+            System.out.println("Edad: " + paciente.getEdad());
+            System.out.println("Rut: " + paciente.getRut());
             System.out.println("");
             indice++;
         }
