@@ -61,6 +61,7 @@ public class Main {
                         System.out.println("");
                         continue;
                     }
+
                     sistema.eliminarPaciente(rutEliminar);
                     break;
                 case 4:
@@ -81,6 +82,7 @@ public class Main {
                 case 9:
                     System.out.println("Saliendo del programa...");
                     System.exit(0);
+
                     break;
                 default:
                     System.out.println("Opción inválida");

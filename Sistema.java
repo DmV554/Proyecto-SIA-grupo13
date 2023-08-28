@@ -9,9 +9,11 @@ public class Sistema {
         System.out.println("");
     }
 
+
     public boolean existePaciente(String rutBuscado) {
         return mapaPacientes.containsKey(rutBuscado);
     }
+
 
 
     public void eliminarPaciente(String rutEliminar) {
