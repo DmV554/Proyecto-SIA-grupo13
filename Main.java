@@ -34,7 +34,9 @@ public class Main {
                     System.out.println("Ingrese rut del paciente: ");
                     String rutPaciente = lector.readLine();
 
-                    if(!sistema.existePaciente(rutPaciente)) {
+                    if(sistema.existePaciente(rutPaciente)) {
+                        System.out.println("El paciente ya existe, volviendo al menú principal");
+                        System.out.println("");
                         continue;
                     }
 
@@ -44,32 +46,43 @@ public class Main {
                     System.out.println("Ingrese edad del paciente: ");
                     int edadPaciente = Integer.parseInt(lector.readLine());
 
+
                     sistema.agregarPaciente(new Paciente(nombrePaciente, edadPaciente, rutPaciente));
                     break;
                 case 2:
-                    
+
                     break;
                 case 3:
-                    sistema.eliminarPaciente();
+                    System.out.println("Ingrese el rut del paciente a eliminar: ");
+                    String rutEliminar = lector.readLine();
+
+                    if(!sistema.existePaciente(rutEliminar)) {
+                        System.out.println("El paciente no existe, volviendo al menú principal");
+                        System.out.println("");
+                        continue;
+                    }
+
+                    sistema.eliminarPaciente(rutEliminar);
                     break;
                 case 4:
-                   
+
                     break;
                 case 5:
-                    
+
                     break;
                 case 6:
-                    
+
                     break;
                 case 7:
                     sistema.mostrarPacientes();
                     break;
                 case 8:
-                    
+
                     break;
                 case 9:
                     System.out.println("Saliendo del programa...");
                     System.exit(0);
+
                     break;
                 default:
                     System.out.println("Opción inválida");
