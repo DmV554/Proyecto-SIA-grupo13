@@ -31,19 +31,20 @@ public class Main {
 
             switch(opcion) {
                 case 1:
+                    System.out.println("Ingrese rut del paciente: ");
+                    String rutPaciente = lector.readLine();
+
+                    if(!sistema.existePaciente(rutPaciente)) {
+                        continue;
+                    }
+
                     System.out.println("Ingrese nombre del paciente: ");
                     String nombrePaciente = lector.readLine();
 
                     System.out.println("Ingrese edad del paciente: ");
                     int edadPaciente = Integer.parseInt(lector.readLine());
 
-                    System.out.println("Ingrese rut del paciente: ");
-                    String rutPaciente = lector.readLine();
-
-                    System.out.println("Ingrese enfermedades del paciente: ");
-                    String enfermedadesPaciente = lector.readLine();
-
-                    sistema.agregarPaciente(new Paciente(nombrePaciente, edadPaciente, rutPaciente, enfermedadesPaciente));
+                    sistema.agregarPaciente(new Paciente(nombrePaciente, edadPaciente, rutPaciente));
                     break;
                 case 2:
                     

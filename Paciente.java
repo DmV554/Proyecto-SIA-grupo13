@@ -2,14 +2,12 @@ public class Paciente {
     private String nombre;
     private int edad;
     private String rut;
-    private String enfermedades;
     ConsultaMedica[] consultas;
 
-    public Paciente(String var1, int var2, String var3, String var4) {
+    public Paciente(String var1, int var2, String var3) {
         this.nombre = var1;
         this.edad = var2;
         this.rut = var3;
-        this.enfermedades = var4;
         this.consultas = new ConsultaMedica[30];
     }
 
@@ -35,13 +33,5 @@ public class Paciente {
 
     public String getRut() {
         return this.rut;
-    }
-
-    public void setEnfermedades(String var1) {
-        this.enfermedades = var1;
-    }
-
-    public String getEnfermedades() {
-        return this.enfermedades;
     }
 }

@@ -14,24 +14,25 @@ public class Sistema {
             return;
         }
 
-        Paciente primerPaciente = listaPacientes.get(0);
+        listaPacientes.add(paciente);
+        System.out.println("Paciente agregado");
+    }
+
+    public boolean existePaciente(String rutBuscado) {
+        Paciente primerPaciente;
 
         int indice = 0;
         while(listaPacientes.size() > indice) {
-            if(primerPaciente.getNombre().equals(paciente.getNombre())) {
-                System.out.println("El paciente ya existe");
-                return;
+            primerPaciente = listaPacientes.get(indice);
+            if(primerPaciente.getRut().equals(rutBuscado)) {
+                System.out.println("El paciente ya existe, volviendo al menu principal");
+                System.out.println("");
+                return false;
             }
 
-            primerPaciente = listaPacientes.get(indice);
-            indice++;
-            
+            indice++; 
         }
-
-        listaPacientes.add(paciente);
-        System.out.println("Paciente agregado");
-
-        
+        return true;
     }
 
     public void eliminarPaciente() {
@@ -52,7 +53,6 @@ public class Sistema {
             System.out.println("Nombre: " + primerPaciente.getNombre());
             System.out.println("Edad: " + primerPaciente.getEdad());
             System.out.println("Rut: " + primerPaciente.getRut());
-            System.out.println("Enfermedades: " + primerPaciente.getEnfermedades());
             System.out.println("");
             indice++;
         }
