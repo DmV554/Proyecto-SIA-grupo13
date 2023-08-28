@@ -10,6 +10,7 @@ public class Sistema {
         if(listaPacientes.isEmpty()) {
             listaPacientes.add(paciente);
             System.out.println("Paciente agregado");
+            System.out.println("");
             return;
         }
 
@@ -38,6 +39,7 @@ public class Sistema {
     public void mostrarPacientes() {
         if(listaPacientes.isEmpty()) {
             System.out.println("No hay pacientes registrados");
+            System.out.println("");
             return;
         }
 
@@ -50,6 +52,7 @@ public class Sistema {
             System.out.println("Edad: " + primerPaciente.getEdad());
             System.out.println("Rut: " + primerPaciente.getRut());
             System.out.println("Enfermedades: " + primerPaciente.getEnfermedades());
+            System.out.println("");
             indice++;
         }
     }
