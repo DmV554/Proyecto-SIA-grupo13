@@ -22,8 +22,9 @@ public class Sistema {
                 System.out.println("El paciente ya existe");
                 return;
             }
-            indice++;
+
             primerPaciente = listaPacientes.get(indice);
+            indice++;
             
         }
 
