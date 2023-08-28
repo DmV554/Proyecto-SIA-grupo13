@@ -34,7 +34,9 @@ public class Main {
                     System.out.println("Ingrese rut del paciente: ");
                     String rutPaciente = lector.readLine();
 
-                    if(!sistema.existePaciente(rutPaciente)) {
+                    if(sistema.existePaciente(rutPaciente)) {
+                        System.out.println("El paciente ya existe, volviendo al menú principal");
+                        System.out.println("");
                         continue;
                     }
 
@@ -50,7 +52,15 @@ public class Main {
                     
                     break;
                 case 3:
-                    sistema.eliminarPaciente();
+                    System.out.println("Ingrese el rut del paciente a eliminar: ");
+                    String rutEliminar = lector.readLine();
+
+                    if(!sistema.existePaciente(rutEliminar)) {
+                        System.out.println("El paciente no existe, volviendo al menú principal");
+                        System.out.println("");
+                        continue;
+                    }
+                    sistema.eliminarPaciente(rutEliminar);
                     break;
                 case 4:
                    
