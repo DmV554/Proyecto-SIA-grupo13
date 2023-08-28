@@ -25,6 +25,7 @@ public class Sistema {
         if (mapaPacientes.isEmpty()) {
             System.out.println("No hay pacientes registrados");
             System.out.println("");
+
             return;
         }
 

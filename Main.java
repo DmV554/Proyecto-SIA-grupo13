@@ -46,6 +46,7 @@ public class Main {
                     System.out.println("Ingrese edad del paciente: ");
                     int edadPaciente = Integer.parseInt(lector.readLine());
 
+
                     sistema.agregarPaciente(new Paciente(nombrePaciente, edadPaciente, rutPaciente));
                     break;
                 case 2:
