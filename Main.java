@@ -5,6 +5,9 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Sistema sistema = new Sistema();
         int opcion, titulo = 0;
+
+        BufferedReader lector = new BufferedReader(new InputStreamReader(System.in));
+
         while(true) {
             if(titulo == 0) {
                 System.out.println("=========================================================");
@@ -12,20 +15,20 @@ public class Main {
                 System.out.println("=========================================================");
                 titulo++;
             }
+            
+            System.out.println(
+                    """
+                            ***** Escoga una opción *****
+                            1. Agregar paciente al registro
+                            2. Editar paciente del registro
+                            3. Eliminar paciente del registro
+                            4. Agregar consulta médica
+                            5. Editar consulta médica
+                            6. Eliminar consulta médica
+                            7. Mostrar pacientes
+                            8. Mostrar consultas médicas por paciente
+                            9. Salir del sistema""");
 
-            System.out.println("Escoja una opcion: ");
-            System.out.println("1. Agregar paciente al registro");
-            System.out.println("2. Editar paciente del registro");
-            System.out.println("3. Eliminar paciente del registro");
-            System.out.println("4. Agregar consulta medica");
-            System.out.println("5. Editar consulta medica");
-            System.out.println("6. Eliminar consulta medica");
-            System.out.println("7. Mostrar pacientes");
-            System.out.println("8. Mostrar consultas medicas por paciente");
-            System.out.println("9. Salir del sistema");
-            System.out.println("");
-
-            BufferedReader lector = new BufferedReader(new InputStreamReader(System.in));
 
             opcion = Integer.parseInt(lector.readLine());
 
