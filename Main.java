@@ -100,7 +100,14 @@ public class Main {
 
                     break;
                 case 6:
+                    System.out.println("Ingrese rut del paciente asignado a la cita que quiera eliminar: ");
+                    rut = lector.readLine();
 
+                    if (sistema.existePaciente(rut)) {
+                        sistema.eliminarCita(rut);
+                    } else {
+                        System.out.println("El paciente con el rut proporcionado no existe.");
+                    }
                     break;
                 case 7:
                     sistema.mostrarPacientes();

@@ -50,7 +50,12 @@ public class Sistema {
 
     }
 
-    public void eliminarCita() {
+    public void eliminarCita(String rut) {
+        if (mapaPacientes.containsKey(rut)) {
+            Paciente paciente = mapaPacientes.get(rut);
+            paciente.consultas.clear();
+            System.out.println("Todas las citas del paciente han sido eliminadas.");
+        }
     }
 
     public void listarConsultasPorPaciente() {
