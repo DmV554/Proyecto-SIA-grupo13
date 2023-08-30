@@ -18,19 +18,21 @@ public class Main {
             
             System.out.println(
                     """
-                            ***** Escoga una opción *****
+                            ***** Escoja una opcion *****
                             1. Agregar paciente al registro
                             2. Editar paciente del registro
                             3. Eliminar paciente del registro
-                            4. Agregar consulta médica
-                            5. Editar consulta médica
-                            6. Eliminar consulta médica
+                            4. Agregar consulta medica
+                            5. Editar consulta medica
+                            6. Eliminar consulta medica
                             7. Mostrar pacientes
-                            8. Mostrar consultas médicas por paciente
+                            8. Mostrar consultas medicas por paciente
                             9. Salir del sistema""");
 
 
             opcion = Integer.parseInt(lector.readLine());
+
+            System.out.println("");
 
             switch(opcion) {
                 case 1:
@@ -68,15 +70,16 @@ public class Main {
                     sistema.eliminarPaciente(rutEliminar);
                     break;
                 case 4:
-
                     System.out.println("Ingrese rut del paciente al que se le asignara la cita: ");
-                    String rut = lector.readLine();
-                    if(!sistema.existePaciente(rut)) {
+                    String rutCita = lector.readLine();
+                    if(!sistema.existePaciente(rutCita)) {
                         System.out.println("El paciente no existe, volviendo al menú principal");
                         System.out.println("");
                         continue;
                     }
 
+                    System.out.println("Ingrese el nombre o identificador de la consulta: ");
+                    String nombreConsulta = lector.readLine();
 
                     System.out.println("Ingrese nombre del medico: ");
                     String medico = lector.readLine();
@@ -92,28 +95,67 @@ public class Main {
 
                     System.out.println("Ingrese la descripcion: ");
                     String descripcion = lector.readLine();
-                    ConsultaMedica consultaAux = new ConsultaMedica(medico, hora, fecha, motivo, descripcion);
+                    ConsultaMedica consultaAux = new ConsultaMedica(medico, hora, fecha, motivo, descripcion, nombreConsulta);
 
-                    sistema.agregarCita(consultaAux,rut);
+                    sistema.agregarCita(consultaAux,rutCita);
                     break;
                 case 5:
 
                     break;
                 case 6:
-                    System.out.println("Ingrese rut del paciente asignado a la cita que quiera eliminar: ");
-                    rut = lector.readLine();
+                    System.out.println("Ingrese rut del paciente asignado a la consulta que quiera eliminar: ");
+                    String rutConsultaEliminar = lector.readLine();
 
-                    if (sistema.existePaciente(rut)) {
-                        sistema.eliminarCita(rut);
-                    } else {
-                        System.out.println("El paciente con el rut proporcionado no existe.");
+                     if(!sistema.existePaciente(rutConsultaEliminar)) {
+                        System.out.println("El paciente no existe, volviendo al menú principal");
+                        System.out.println("");
+                        continue;
                     }
+
+                    Paciente pacienteAux = sistema.mapaPacientes.get(rutConsultaEliminar);
+                    
+                    if(pacienteAux.consultas.isEmpty()) {
+                        System.out.println("El paciente no tiene consultas asignadas, volviendo al menú principal");
+                        System.out.println("");
+                        continue;
+                    }
+
+                    System.out.println("Ingrese el nombre o identificador de la consulta: ");
+                    String nombreConsultaEliminar = lector.readLine();
+
+                    ConsultaMedica consultaAuxiliar = sistema.buscarConsulta(pacienteAux, nombreConsultaEliminar);
+
+                    if(consultaAuxiliar == null) {
+                        System.out.println("La consulta no existe, volviendo al menú principal");
+                        System.out.println("");
+                        continue;
+                    }
+
+                    sistema.eliminarCita(pacienteAux, consultaAuxiliar);
+
                     break;
                 case 7:
                     sistema.mostrarPacientes();
                     break;
                 case 8:
-                    sistema.listarConsultasPorPaciente();
+                    System.out.println("Ingrese rut del paciente al que listar sus consultas: ");
+                    String rutConsultaListar = lector.readLine();
+
+                     if(!sistema.existePaciente(rutConsultaListar)) {
+                        System.out.println("El paciente no existe, volviendo al menú principal");
+                        System.out.println("");
+                        continue;
+                    }
+
+                    Paciente pacienteAuxListar = sistema.mapaPacientes.get(rutConsultaListar);
+                    
+                    if(pacienteAuxListar.consultas.isEmpty()) {
+                        System.out.println("El paciente no tiene consultas asignadas, volviendo al menú principal");
+                        System.out.println("");
+                        continue;
+                    }
+
+                    sistema.listarConsultasPorPaciente(pacienteAuxListar);
                     break;
                 case 9:
                     System.out.println("Saliendo del programa...");

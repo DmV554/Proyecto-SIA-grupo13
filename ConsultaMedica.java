@@ -4,13 +4,16 @@ public class ConsultaMedica {
     private String fecha;
     private String motivoVisita;
     private String descripcion;
+    private String identificadorConsulta;
 
-    public ConsultaMedica(String medico, String hora, String fecha, String motivoVisita, String descripcion) {
+    public ConsultaMedica(String medico, String hora, String fecha, String motivoVisita, String descripcion, String identificadorConsulta) {
         this.medico = medico;
         this.hora = hora;
         this.fecha = fecha;
         this.motivoVisita = motivoVisita;
         this.descripcion = descripcion;
+        this.identificadorConsulta = identificadorConsulta;
+
     }
 
     public void setDescripcion(String var1) {
@@ -51,5 +54,13 @@ public class ConsultaMedica {
 
     public String getMotivoVisita() {
         return this.motivoVisita;
+    }
+
+    public void setIdentificadorConsulta(String var1) {
+        this.identificadorConsulta = var1;
+    }
+
+    public String getIdentificadorConsulta() {
+        return this.identificadorConsulta;
     }
 }

@@ -33,6 +33,7 @@ public class Sistema {
         }
 
 
+        System.out.println("======= PACIENTES DEL SISTEMA =======");  
         for (Paciente paciente : mapaPacientes.values()) {
             System.out.println("Nombre: " + paciente.getNombre());
             System.out.println("Edad: " + paciente.getEdad());
@@ -40,6 +41,8 @@ public class Sistema {
             System.out.println("");
 
         }
+        System.out.println("=====================================");
+        System.out.println("");
     }
 
     public void agregarCita(ConsultaMedica consultaMedica, String rut) {
@@ -50,29 +53,30 @@ public class Sistema {
 
     }
 
-    public void eliminarCita(String rut) {
-        if (mapaPacientes.containsKey(rut)) {
-            Paciente paciente = mapaPacientes.get(rut);
-            paciente.consultas.clear();
-            System.out.println("Todas las citas del paciente han sido eliminadas.");
-        }
+    public void eliminarCita(Paciente paciente, ConsultaMedica consulta) {
+        paciente.consultas.remove(consulta);
     }
 
-    public void listarConsultasPorPaciente() {
-        int indice = 0;
-
-        for(Paciente auxiliar : mapaPacientes.values()) {
-            while(indice != auxiliar.consultas.size()) {
-                System.out.println("Nombre del paciente: "+ auxiliar.getNombre());
-                System.out.println("Doctor de la cita: "+ auxiliar.consultas.get(indice).getMedico());
-                System.out.println("Fecha de la cita: "+ auxiliar.consultas.get(indice).getFecha());
-                System.out.println("Hora de la cita: "+ auxiliar.consultas.get(indice).getHora());
-                System.out.println("Motivo de la cita: "+ auxiliar.consultas.get(indice).getMotivoVisita());
-                System.out.println("Desripción de la cita: "+ auxiliar.consultas.get(indice).getDescripcion());
-                System.out.println("");
-                indice++;
+    public ConsultaMedica buscarConsulta(Paciente paciente, String nombreConsulta) {
+        for (ConsultaMedica consulta : paciente.consultas) {
+            if (consulta.getIdentificadorConsulta().equals(nombreConsulta)) {
+                return consulta;
             }
-            indice = 0;
+        }
+        return null;
+    }
+
+    
+
+    public void listarConsultasPorPaciente(Paciente paciente) {
+        for (ConsultaMedica consulta : paciente.consultas) {
+            System.out.println("Nombre: " + consulta.getMedico());
+            System.out.println("Hora: " + consulta.getHora());
+            System.out.println("Fecha: " + consulta.getFecha());
+            System.out.println("Motivo de visita: " + consulta.getMotivoVisita());
+            System.out.println("Descripcion: " + consulta.getDescripcion());
+            System.out.println("Identificador de consulta: " + consulta.getIdentificadorConsulta());
+            System.out.println("");
         }
 
     }
