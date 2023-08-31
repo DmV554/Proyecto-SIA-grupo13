@@ -4,7 +4,7 @@ public class Paciente {
     private int edad;
     private String rut;
 
-    ArrayList<ConsultaMedica> consultas;
+    private ArrayList<ConsultaMedica> consultas;
 
     public Paciente(String var1, int var2, String var3) {
         this.nombre = var1;
@@ -36,4 +36,38 @@ public class Paciente {
     public String getRut() {
         return this.rut;
     }
+
+    public void agregarConsulta(ConsultaMedica consultaMedica) {
+        consultas.add(consultaMedica);
+    }
+
+    public boolean noHayConsultas() {
+        return consultas.isEmpty();
+    }
+
+    public ConsultaMedica buscarConsulta(String nombreConsulta) {
+        for (ConsultaMedica consulta : consultas) {
+            if (consulta.getIdentificadorConsulta().equals(nombreConsulta)) {
+                return consulta;
+            }
+        }
+        return null;
+    }
+
+    public void eliminarConsulta(ConsultaMedica consulta) {
+        consultas.remove(consulta);
+    }
+
+    public void listarConsultasPorPaciente() {
+        for (ConsultaMedica consulta : consultas) {
+            System.out.println("Nombre: " + consulta.getMedico());
+            System.out.println("Hora: " + consulta.getHora());
+            System.out.println("Fecha: " + consulta.getFecha());
+            System.out.println("Motivo de visita: " + consulta.getMotivoVisita());
+            System.out.println("Descripcion: " + consulta.getDescripcion());
+            System.out.println("Identificador de consulta: " + consulta.getIdentificadorConsulta());
+            System.out.println("");
+        }
+    }
+
 }

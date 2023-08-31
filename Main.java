@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.io.*;
 
 public class Main {
@@ -81,6 +80,14 @@ public class Main {
                     System.out.println("Ingrese el nombre o identificador de la consulta: ");
                     String nombreConsulta = lector.readLine();
 
+                    Paciente pacienteAuxConsulta = sistema.buscarPaciente(rutCita);
+
+                    if(pacienteAuxConsulta.buscarConsulta(nombreConsulta) != null) {
+                        System.out.println("La consulta ya existe, volviendo al menú principal");
+                        System.out.println("");
+                        continue;
+                    }
+
                     System.out.println("Ingrese nombre del medico: ");
                     String medico = lector.readLine();
 
@@ -95,9 +102,10 @@ public class Main {
 
                     System.out.println("Ingrese la descripcion: ");
                     String descripcion = lector.readLine();
+
                     ConsultaMedica consultaAux = new ConsultaMedica(medico, hora, fecha, motivo, descripcion, nombreConsulta);
 
-                    sistema.agregarCita(consultaAux,rutCita);
+                    pacienteAuxConsulta.agregarConsulta(consultaAux);
                     break;
                 case 5:
 
@@ -112,9 +120,9 @@ public class Main {
                         continue;
                     }
 
-                    Paciente pacienteAux = sistema.mapaPacientes.get(rutConsultaEliminar);
+                    Paciente pacienteAux = sistema.buscarPaciente(rutConsultaEliminar);
                     
-                    if(pacienteAux.consultas.isEmpty()) {
+                    if(pacienteAux.noHayConsultas()) {
                         System.out.println("El paciente no tiene consultas asignadas, volviendo al menú principal");
                         System.out.println("");
                         continue;
@@ -123,7 +131,7 @@ public class Main {
                     System.out.println("Ingrese el nombre o identificador de la consulta: ");
                     String nombreConsultaEliminar = lector.readLine();
 
-                    ConsultaMedica consultaAuxiliar = sistema.buscarConsulta(pacienteAux, nombreConsultaEliminar);
+                    ConsultaMedica consultaAuxiliar = pacienteAux.buscarConsulta(nombreConsultaEliminar);
 
                     if(consultaAuxiliar == null) {
                         System.out.println("La consulta no existe, volviendo al menú principal");
@@ -131,7 +139,7 @@ public class Main {
                         continue;
                     }
 
-                    sistema.eliminarCita(pacienteAux, consultaAuxiliar);
+                    pacienteAux.eliminarConsulta(consultaAuxiliar);
 
                     break;
                 case 7:
@@ -147,15 +155,15 @@ public class Main {
                         continue;
                     }
 
-                    Paciente pacienteAuxListar = sistema.mapaPacientes.get(rutConsultaListar);
+                    Paciente pacienteAuxListar = sistema.buscarPaciente(rutConsultaListar);
                     
-                    if(pacienteAuxListar.consultas.isEmpty()) {
+                    if(pacienteAuxListar.noHayConsultas()) {
                         System.out.println("El paciente no tiene consultas asignadas, volviendo al menú principal");
                         System.out.println("");
                         continue;
                     }
 
-                    sistema.listarConsultasPorPaciente(pacienteAuxListar);
+                    pacienteAuxListar.listarConsultasPorPaciente();
                     break;
                 case 9:
                     System.out.println("Saliendo del programa...");
