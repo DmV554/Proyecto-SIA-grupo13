@@ -3,6 +3,7 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         Sistema sistema = new Sistema();
+        sistema.agregarPacientesDefecto();
         int opcion, titulo = 0;
 
         BufferedReader lector = new BufferedReader(new InputStreamReader(System.in));
