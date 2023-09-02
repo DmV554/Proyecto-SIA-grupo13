@@ -79,10 +79,89 @@ public class Sistema {
         System.out.println("");
     }
 
+    public void mostrarPacientes(int edadFiltro) {
+        if (mapaPacientes.isEmpty()) {
+            System.out.println("No hay pacientes registrados");
+            System.out.println("");
+            return;
+        }
+        int contador = 0;
+        
+        for (Paciente paciente : mapaPacientes.values()) {
+            if(paciente.getEdad() > edadFiltro) {
+                continue;
+            }
+
+            if(contador == 0) {
+                System.out.println("======= PACIENTES DEL SISTEMA =======");
+                contador++;  
+            }
+
+            System.out.println("Nombre: " + paciente.getNombre());
+            System.out.println("Edad: " + paciente.getEdad());
+            System.out.println("Rut: " + paciente.getRut());
+            System.out.println("");
+        }
+
+        if(contador > 0) {
+            System.out.println("=====================================");
+            System.out.println("");
+        } else {
+            System.out.println("No hay pacientes registrados hasta esa edad");
+            System.out.println("");
+        }
+        
+    }
+
     public Paciente buscarPaciente(String rut) {
         return mapaPacientes.get(rut);
     }
 
+    public void mostrarTodasLasConsultas() {
+        if (mapaPacientes.isEmpty()) {
+            System.out.println("No hay pacientes registrados");
+            System.out.println("");
+            return;
+        }
+
+        System.out.println("======= CONSULTAS DEL SISTEMA =======");  
+        for (Paciente paciente : mapaPacientes.values()) {
+            paciente.listarConsultasPorPaciente();
+        }
+        System.out.println("=====================================");
+        System.out.println("");
+    }
+
+    public void mostrarTodasLasConsultas(String motivoEspecifico) {
+        if (mapaPacientes.isEmpty()) {
+            System.out.println("No hay pacientes registrados");
+            System.out.println("");
+            return;
+        }
+
+        boolean hayConsultas = false;
+
+        for (Paciente paciente : mapaPacientes.values()) {
+            if(paciente.noHayConsultas()) {
+                continue;
+            }
+
+            if(!hayConsultas){
+                System.out.println("======= CONSULTAS DEL SISTEMA =======");  
+            }
+
+            paciente.listarConsultasPorPaciente(motivoEspecifico);
+            hayConsultas = true;
+        }
+
+        if(!hayConsultas) {
+            System.out.println("No hay consultas con ese motivo");
+            System.out.println("");
+            return;
+        }
+        System.out.println("=====================================");
+        System.out.println("");
+    }
 }
 
 

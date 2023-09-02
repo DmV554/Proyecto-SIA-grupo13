@@ -54,6 +54,15 @@ public class Paciente {
         return null;
     }
 
+     public ConsultaMedica buscarConsulta(String nombreConsulta, String motivoBuscado) {
+        for (ConsultaMedica consulta : consultas) {
+            if (consulta.getIdentificadorConsulta().equals(nombreConsulta)) {
+                return consulta;
+            }
+        }
+        return null;
+    }
+
     public void eliminarConsulta(ConsultaMedica consulta) {
         consultas.remove(consulta);
     }
@@ -66,6 +75,27 @@ public class Paciente {
             System.out.println("Motivo de visita: " + consulta.getMotivoVisita());
             System.out.println("Descripcion: " + consulta.getDescripcion());
             System.out.println("Identificador de consulta: " + consulta.getIdentificadorConsulta());
+            System.out.println("");
+        }
+    }
+
+    public void listarConsultasPorPaciente(String motivoBuscado) {
+        boolean hayConsultas = false;
+        for (ConsultaMedica consulta : consultas) {
+            if(consulta.getMotivoVisita().contains(motivoBuscado)) {
+                System.out.println("Nombre: " + consulta.getMedico());
+                System.out.println("Hora: " + consulta.getHora());
+                System.out.println("Fecha: " + consulta.getFecha());
+                System.out.println("Motivo de visita: " + consulta.getMotivoVisita());
+                System.out.println("Descripcion: " + consulta.getDescripcion());
+                System.out.println("Identificador de consulta: " + consulta.getIdentificadorConsulta());
+                System.out.println("");
+                hayConsultas = true;
+            }
+        }
+
+        if(!hayConsultas) {
+            System.out.println("No hay consultas con ese motivo en este paciente!");
             System.out.println("");
         }
     }

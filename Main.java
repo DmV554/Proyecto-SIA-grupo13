@@ -27,7 +27,10 @@ public class Main {
                             6. Eliminar consulta medica
                             7. Mostrar pacientes
                             8. Mostrar consultas medicas por paciente
-                            9. Salir del sistema""");
+                            9. Mostrar pacientes por rango etario
+                            10. Mostrar todas las consultas existentes
+                            11. Mostrar todas las consultas con motivo de visita especifico
+                            12. Salir del sistema""");
 
 
             opcion = Integer.parseInt(lector.readLine());
@@ -167,13 +170,32 @@ public class Main {
                     pacienteAuxListar.listarConsultasPorPaciente();
                     break;
                 case 9:
+                    System.out.println("Ingrese edad maxima para filtrar pacientes: ");
+                    int edadFiltro = Integer.parseInt(lector.readLine());
+                    sistema.mostrarPacientes(edadFiltro);
+                   
+                    break;
+                case 10:
+                    sistema.mostrarTodasLasConsultas();
+
+                break;
+
+                case 11:
+                    System.out.println("Ingrese el motivo de visita a buscar: ");
+                    String motivoBuscado = lector.readLine();
+                    sistema.mostrarTodasLasConsultas(motivoBuscado);
+
+                break;
+
+                case 12:
                     System.out.println("Saliendo del programa...");
                     System.exit(0);
 
-                    break;
+                break;
+
                 default:
-                    System.out.println("Opción inválida");
-                    break;
+                System.out.println("Opción inválida");
+                break;
             }
         }
     }
