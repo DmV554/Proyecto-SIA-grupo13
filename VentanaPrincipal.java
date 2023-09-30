@@ -39,14 +39,14 @@ public class VentanaPrincipal {
         
                 // Usar un nuevo Statement para la consulta interna
                 try (Statement statementConsultas = connection.createStatement()) {
-                    ResultSet resultSetConsultas = statementConsultas.executeQuery("SELECT * FROM consultas WHERE rutAsociado = '" + rut + "'");
+                    ResultSet resultSetConsultas = statementConsultas.executeQuery("SELECT * FROM consultas WHERE rut = '" + rut + "'");
                     while (resultSetConsultas.next()) {
                         String medico = resultSetConsultas.getString("medico");
                         String fecha = resultSetConsultas.getString("fecha");
                         String hora = resultSetConsultas.getString("hora");
                         String motivo = resultSetConsultas.getString("motivoVisita");
                         String descripcion = resultSetConsultas.getString("descripcion");
-                        ConsultaMedica consulta = new ConsultaMedica(medico, fecha, hora, motivo, descripcion, rut);
+                        ConsultaMedica consulta = new ConsultaMedica(medico, fecha, hora, motivo, descripcion);
                         paciente.agregarConsulta(consulta);
                     }
                 }
@@ -264,7 +264,7 @@ public class VentanaPrincipal {
                 JOptionPane.showMessageDialog(null, "No existe un paciente con ese RUT");
                 return;
             }
-            ConsultaMedica nuevaConsulta = new ConsultaMedica(txtMedico.getText(), txtFecha.getText(), txtHora.getText(), txtMotivo.getText(), txtDescripcion.getText(), rut);
+            ConsultaMedica nuevaConsulta = new ConsultaMedica(txtMedico.getText(), txtFecha.getText(), txtHora.getText(), txtMotivo.getText(), txtDescripcion.getText());
             sistema.buscarPaciente(rut).agregarConsulta(nuevaConsulta);
             sistema.agregarConsulta(nuevaConsulta);
             //CSV.escribirConsulta(rut, nuevaConsulta);  // Asegúrate de tener la clase CSVHelper con el método correspondiente
