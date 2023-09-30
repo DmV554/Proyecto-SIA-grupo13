@@ -27,6 +27,7 @@ public class VentanaPrincipal {
             System.out.println("Conexión exitosa");
         } else {
             System.out.println("Error al conectar");
+            System.exit(0);
         }
 
         try (Statement statement = connection.createStatement()) {
@@ -153,23 +154,38 @@ public class VentanaPrincipal {
 
         JButton btnGuardar = createButton("Guardar", BUTTON_FONT);
         btnGuardar.addActionListener(e -> {
-            String rut = txtRut.getText();
+            try {
+                String rut = txtRut.getText();
+                String nombre = txtNombre.getText();
+                String strEdad = txtEdad.getText();
 
-            if (sistema.existePaciente(rut)) {
-                JOptionPane.showMessageDialog(null, "Ya existe un paciente con ese RUT");
-                return;
+                if (nombre.trim().isEmpty()) {
+                    throw new CamposVaciosException("El campo Nombre está vacío.");
+                }
+                if (strEdad.trim().isEmpty()) {
+                    throw new CamposVaciosException("El campo Edad está vacío.");
+                }
+                if (rut.trim().isEmpty()) {
+                    throw new CamposVaciosException("El campo RUT está vacío.");
+                }
+
+                if (sistema.existePaciente(rut)) {
+                    JOptionPane.showMessageDialog(null, "Ya existe un paciente con ese RUT");
+                    return;
+                }
+
+                int edad = Integer.parseInt(strEdad);
+
+                Paciente nuevoPaciente = new Paciente(nombre, edad, rut);
+                sistema.agregarPaciente(nuevoPaciente);
+
+                dialog.dispose();
+
+            } catch (CamposVaciosException  ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Por favor, ingrese una edad válida", "Error", JOptionPane.ERROR_MESSAGE);
             }
-
-            String nombre = txtNombre.getText();
-            int edad = Integer.parseInt(txtEdad.getText());
-
-            Paciente nuevoPaciente = new Paciente(nombre, edad, rut);
-            sistema.agregarPaciente(nuevoPaciente);
-
-            // Escribir el nuevo paciente en el archivo CSV
-            //CSV.escribirPaciente(nuevoPaciente);
-
-            dialog.dispose();
         });
 
         gbc.gridx = 1;
@@ -181,6 +197,7 @@ public class VentanaPrincipal {
         dialog.add(panel);
         dialog.setVisible(true);
     }
+
 
     public void abrirDialogoMostrarPacientes() {
         JDialog dialog = new JDialog();
@@ -222,11 +239,13 @@ public class VentanaPrincipal {
         JButton btnEliminar = createButton("Eliminar", BUTTON_FONT);
         btnEliminar.addActionListener(e -> {
             String rut = txtRut.getText();
-            if (!sistema.existePaciente(rut)) {
-                JOptionPane.showMessageDialog(null, "No existe un paciente con ese RUT");
-            } else {
+            try {
+
+                Paciente paciente = sistema.buscarPaciente(rut);
                 sistema.eliminarPaciente(rut);
                 dialog.dispose();
+            } catch (PacienteNoEncontradoException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
         addToPanel(panel, "", btnEliminar, gbc, 1);
@@ -234,6 +253,7 @@ public class VentanaPrincipal {
         dialog.add(panel);
         dialog.setVisible(true);
     }
+
 
     public void abrirDialogoAgregaConsulta() {
         JDialog dialog = createDialog("Agregar Consulta Médica", 400, 400);
@@ -260,15 +280,14 @@ public class VentanaPrincipal {
         JButton btnGuardar = createButton("Guardar", BUTTON_FONT);
         btnGuardar.addActionListener(e -> {
             String rut = txtRut.getText();
-            if (!sistema.existePaciente(rut)) {
-                JOptionPane.showMessageDialog(null, "No existe un paciente con ese RUT");
-                return;
-            }
             ConsultaMedica nuevaConsulta = new ConsultaMedica(txtMedico.getText(), txtFecha.getText(), txtHora.getText(), txtMotivo.getText(), txtDescripcion.getText());
-            sistema.buscarPaciente(rut).agregarConsulta(nuevaConsulta);
-            sistema.agregarConsulta(nuevaConsulta);
-            //CSV.escribirConsulta(rut, nuevaConsulta);  // Asegúrate de tener la clase CSVHelper con el método correspondiente
-            dialog.dispose();
+            try {
+                sistema.buscarPaciente(rut).agregarConsulta(nuevaConsulta);
+                sistema.agregarConsulta(nuevaConsulta);
+                dialog.dispose();
+            } catch (PacienteNoEncontradoException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         gbc.gridx = 1;
@@ -280,6 +299,7 @@ public class VentanaPrincipal {
         dialog.add(panel);
         dialog.setVisible(true);
     }
+
 
     public void abrirDialogoMostrarConsultas() {
         JDialog dialog = new JDialog();
@@ -323,33 +343,33 @@ public class VentanaPrincipal {
 
         btnBuscar.addActionListener(e -> {
             String rut = txtRut.getText();
-            Paciente paciente = sistema.buscarPaciente(rut);
-            if (paciente == null) {
-                JOptionPane.showMessageDialog(null, "No existe un paciente con ese RUT");
-                return;
-            }
+            try {
+                Paciente paciente = sistema.buscarPaciente(rut);
+                lblRutValor.setText("RUT ingresado: " + rut);
 
-            lblRutValor.setText("RUT ingresado: " + rut);
+                model.setRowCount(0);  // Limpiar la tabla
 
-            model.setRowCount(0);  // Limpiar la tabla
+                ArrayList<ConsultaMedica> consultasPaciente = new ArrayList<>();
+                paciente.inicializarConsultas(consultasPaciente);
 
-            ArrayList<ConsultaMedica> consultasPaciente = new ArrayList<>();
-            paciente.inicializarConsultas(consultasPaciente);
-
-            for (ConsultaMedica consulta : consultasPaciente) {
-                Object[] rowData = {
-                        consulta.getMedico(),
-                        consulta.getHora(),
-                        consulta.getFecha(),
-                        consulta.getMotivoVisita(),
-                        consulta.getDescripcion()
-                };
-                model.addRow(rowData);
+                for (ConsultaMedica consulta : consultasPaciente) {
+                    Object[] rowData = {
+                            consulta.getMedico(),
+                            consulta.getHora(),
+                            consulta.getFecha(),
+                            consulta.getMotivoVisita(),
+                            consulta.getDescripcion()
+                    };
+                    model.addRow(rowData);
+                }
+            } catch (PacienteNoEncontradoException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         dialog.setVisible(true);
     }
+
 
 
     public void abrirDialogoBuscarPacienteParaEditarConsulta() {
@@ -364,12 +384,12 @@ public class VentanaPrincipal {
         JButton btnBuscar = new JButton("Buscar");
         btnBuscar.addActionListener(e -> {
             String rut = txtRut.getText();
-            Paciente paciente = sistema.buscarPaciente(rut);
-            if (paciente == null) {
-                JOptionPane.showMessageDialog(null, "No existe un paciente con ese RUT");
-            } else {
+            try {
+                Paciente paciente = sistema.buscarPaciente(rut);
                 abrirDialogoMostrarConsultasParaEditar(paciente);
                 dialog.dispose();
+            } catch (PacienteNoEncontradoException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -379,6 +399,7 @@ public class VentanaPrincipal {
         dialog.add(btnBuscar);
         dialog.setVisible(true);
     }
+
 
 
     public void abrirDialogoMostrarConsultasParaEditar(Paciente paciente) {
@@ -423,7 +444,11 @@ public class VentanaPrincipal {
             if (selectedRow != -1) {
                 int confirm = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar esta consulta?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    paciente.eliminarConsulta(selectedRow);
+                    try {
+                        paciente.eliminarConsulta(selectedRow);
+                    } catch (ConsultaNoEncontradaException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                     model.removeRow(selectedRow);
                 }
             } else {
@@ -562,3 +587,6 @@ public class VentanaPrincipal {
     }
 
 }
+
+
+

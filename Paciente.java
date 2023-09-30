@@ -41,20 +41,12 @@ public class Paciente {
         consultas.add(consultaMedica);
     }
 
-    public boolean noHayConsultas() {
-        return consultas.isEmpty();
-    }
 
-    public ConsultaMedica buscarConsulta(String rut, String medico) {
-        for (ConsultaMedica consulta : consultas) {
-            if (consulta.getMedico().equals(medico)) {
-                return consulta;
-            }
+
+    public void eliminarConsulta(int index) throws ConsultaNoEncontradaException {
+        if (index < 0 || index >= consultas.size()) {
+            throw new ConsultaNoEncontradaException();
         }
-        return null;
-    }
-
-    public void eliminarConsulta(int index) {
         consultas.remove(index);
     }
 
