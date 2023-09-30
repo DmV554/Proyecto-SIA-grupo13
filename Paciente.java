@@ -45,59 +45,22 @@ public class Paciente {
         return consultas.isEmpty();
     }
 
-    public ConsultaMedica buscarConsulta(String nombreConsulta) {
+    public ConsultaMedica buscarConsulta(String rut, String medico) {
         for (ConsultaMedica consulta : consultas) {
-            if (consulta.getIdentificadorConsulta().equals(nombreConsulta)) {
+            if (consulta.getRutAsociado().equals(rut) && consulta.getMedico().equals(medico)) {
                 return consulta;
             }
         }
         return null;
     }
 
-     public ConsultaMedica buscarConsulta(String nombreConsulta, String motivoBuscado) {
+    public void eliminarConsulta(int index) {
+        consultas.remove(index);
+    }
+
+    public void inicializarConsultas(ArrayList<ConsultaMedica> lista) {
         for (ConsultaMedica consulta : consultas) {
-            if (consulta.getIdentificadorConsulta().equals(nombreConsulta)) {
-                return consulta;
-            }
-        }
-        return null;
-    }
-
-    public void eliminarConsulta(ConsultaMedica consulta) {
-        consultas.remove(consulta);
-    }
-
-    public void listarConsultasPorPaciente() {
-        for (ConsultaMedica consulta : consultas) {
-            System.out.println("Nombre: " + consulta.getMedico());
-            System.out.println("Hora: " + consulta.getHora());
-            System.out.println("Fecha: " + consulta.getFecha());
-            System.out.println("Motivo de visita: " + consulta.getMotivoVisita());
-            System.out.println("Descripcion: " + consulta.getDescripcion());
-            System.out.println("Identificador de consulta: " + consulta.getIdentificadorConsulta());
-            System.out.println("");
+            lista.add(consulta);
         }
     }
-
-    public void listarConsultasPorPaciente(String motivoBuscado) {
-        boolean hayConsultas = false;
-        for (ConsultaMedica consulta : consultas) {
-            if(consulta.getMotivoVisita().contains(motivoBuscado)) {
-                System.out.println("Nombre: " + consulta.getMedico());
-                System.out.println("Hora: " + consulta.getHora());
-                System.out.println("Fecha: " + consulta.getFecha());
-                System.out.println("Motivo de visita: " + consulta.getMotivoVisita());
-                System.out.println("Descripcion: " + consulta.getDescripcion());
-                System.out.println("Identificador de consulta: " + consulta.getIdentificadorConsulta());
-                System.out.println("");
-                hayConsultas = true;
-            }
-        }
-
-        if(!hayConsultas) {
-            System.out.println("No hay consultas con ese motivo en este paciente!");
-            System.out.println("");
-        }
-    }
-
 }

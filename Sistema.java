@@ -1,7 +1,9 @@
 import java.util.*;
+import javax.swing.table.DefaultTableModel;
 
 public class Sistema {
     private HashMap<String, Paciente> mapaPacientes;
+    private ArrayList<ConsultaMedica> listaTodasConsultas;
 
     public Sistema() {
         mapaPacientes = new HashMap<String, Paciente>();
@@ -82,8 +84,44 @@ public class Sistema {
         return mapaPacientes.get(rut);
     }
 
-    public ArrayList<Paciente> crearListaPacientes() {
-        return new ArrayList<Paciente>(mapaPacientes.values());
+    public void inicializarListaPacientes(ArrayList<Paciente> lista) {
+        for (Paciente paciente : mapaPacientes.values()) {
+            lista.add(paciente);
+        }
+    }
+
+    public ArrayList<Paciente> obtenerPacientesPorCriterio(String nombre, int edadMinima) {
+        ArrayList<Paciente> resultados = new ArrayList<>();
+        for (Paciente paciente : mapaPacientes.values()) {
+            if ((nombre.isEmpty() || paciente.getNombre().contains(nombre)) &&
+                    (edadMinima == -1 || paciente.getEdad() >= edadMinima)) {
+                resultados.add(paciente);
+            }
+        }
+        return resultados;
+    }
+
+    public void llenarListaConsultas() {
+        listaTodasConsultas = new ArrayList<>();
+        for (Paciente paciente : mapaPacientes.values()) {
+            paciente.inicializarConsultas(listaTodasConsultas);
+        }
+    }
+
+    public void agregarConsulta(ConsultaMedica consulta) {
+        listaTodasConsultas.add(consulta);
+    }
+
+    public void agregarConsultaTabla(DefaultTableModel model) {
+        for (ConsultaMedica consulta : listaTodasConsultas) {
+                model.addRow(new Object[]{consulta.getMedico(), consulta.getHora(), consulta.getFecha(), consulta.getMotivoVisita(), consulta.getDescripcion()});
+        }
+    }
+
+    public void agregarPacientesTabla(DefaultTableModel model) {
+        for (Paciente paciente : mapaPacientes.values()) {
+            model.addRow(new Object[]{paciente.getNombre(), paciente.getEdad(), paciente.getRut()});
+        }
     }
 
 }
