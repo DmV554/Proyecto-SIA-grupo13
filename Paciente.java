@@ -47,7 +47,7 @@ public class Paciente {
 
     public ConsultaMedica buscarConsulta(String rut, String medico) {
         for (ConsultaMedica consulta : consultas) {
-            if (consulta.getRutAsociado().equals(rut) && consulta.getMedico().equals(medico)) {
+            if (consulta.getMedico().equals(medico)) {
                 return consulta;
             }
         }
