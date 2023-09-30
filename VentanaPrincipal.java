@@ -176,8 +176,15 @@ public class VentanaPrincipal {
 
                 int edad = Integer.parseInt(strEdad);
 
+                DB database = new DB();
+                final Connection connection = database.getConnection();
+
                 Paciente nuevoPaciente = new Paciente(nombre, edad, rut);
-                sistema.agregarPaciente(nuevoPaciente);
+                try {
+                    sistema.agregarPaciente(connection, nuevoPaciente);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
 
                 dialog.dispose();
 

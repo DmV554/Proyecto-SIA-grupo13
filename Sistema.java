@@ -1,3 +1,6 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -10,6 +13,19 @@ public class Sistema {
     }
 
     public void agregarPaciente(Paciente paciente) {
+        mapaPacientes.put(paciente.getRut(), paciente);
+    }
+
+    public void agregarPaciente(Connection connection, Paciente paciente) throws SQLException {
+        String sql = "INSERT INTO pacientes (rut, nombre, edad) VALUES (?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, paciente.getRut());
+            preparedStatement.setString(2, paciente.getNombre());
+            preparedStatement.setInt(3, paciente.getEdad());
+
+            preparedStatement.executeUpdate();
+        }
         mapaPacientes.put(paciente.getRut(), paciente);
     }
 
