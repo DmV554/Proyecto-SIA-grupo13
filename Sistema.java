@@ -73,6 +73,22 @@ public class Sistema {
     public void agregarConsulta(ConsultaMedica consulta) {
         listaTodasConsultas.add(consulta);
     }
+    public void agregarConsulta(Connection connection, ConsultaMedica consulta, Paciente paciente) throws SQLException {
+        String sql = "INSERT INTO consultas (medico, fecha, hora, motivoVisita, rut, descripcion) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, consulta.getMedico());
+            preparedStatement.setString(2, consulta.getFecha());
+            preparedStatement.setString(3, consulta.getHora());
+            preparedStatement.setString(4, consulta.getMotivoVisita());
+            preparedStatement.setString(5, paciente.getRut());
+            preparedStatement.setString(6, consulta.getDescripcion());
+
+
+            preparedStatement.executeUpdate();
+        }
+        listaTodasConsultas.add(consulta);
+    }
 
     public void agregarConsultaTabla(DefaultTableModel model) {
         for (ConsultaMedica consulta : listaTodasConsultas) {

@@ -42,6 +42,7 @@ public class VentanaPrincipal {
                 try (Statement statementConsultas = connection.createStatement()) {
                     ResultSet resultSetConsultas = statementConsultas.executeQuery("SELECT * FROM consultas WHERE rut = '" + rut + "'");
                     while (resultSetConsultas.next()) {
+                        String idConsulta = resultSetConsultas.getString("idConsulta");
                         String medico = resultSetConsultas.getString("medico");
                         String fecha = resultSetConsultas.getString("fecha");
                         String hora = resultSetConsultas.getString("hora");
@@ -288,12 +289,17 @@ public class VentanaPrincipal {
         btnGuardar.addActionListener(e -> {
             String rut = txtRut.getText();
             ConsultaMedica nuevaConsulta = new ConsultaMedica(txtMedico.getText(), txtFecha.getText(), txtHora.getText(), txtMotivo.getText(), txtDescripcion.getText());
+            DB database = new DB();
+            final Connection connection = database.getConnection();
+
             try {
                 sistema.buscarPaciente(rut).agregarConsulta(nuevaConsulta);
-                sistema.agregarConsulta(nuevaConsulta);
+                sistema.agregarConsulta(connection,nuevaConsulta, new Paciente("", 0, rut));
                 dialog.dispose();
             } catch (PacienteNoEncontradoException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
