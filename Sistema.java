@@ -42,7 +42,7 @@ public class Sistema {
             mapaPacientes.remove(rutEliminar);
         }
 
-        String sql = "DELETE FROM pacientes WHERE rut = ?"; // Asume que la columna que contiene el RUT se llama 'rut'
+        String sql = "DELETE FROM pacientes WHERE rut = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, rutEliminar);
@@ -100,8 +100,12 @@ public class Sistema {
 
     public void agregarConsultaTabla(DefaultTableModel model) {
         for (ConsultaMedica consulta : listaTodasConsultas) {
-                model.addRow(new Object[]{consulta.getMedico(), consulta.getHora(), consulta.getFecha(), consulta.getMotivoVisita(), consulta.getDescripcion()});
+                model.addRow(new Object[]{consulta.getMedico(), consulta.getHora(), consulta.getFecha(), consulta.getMotivoVisita(), consulta.getDescripcion(),consulta.getRutAsociado()});
         }
+    }
+
+    public void eliminarConsulta(ConsultaMedica consulta) {
+        listaTodasConsultas.remove(consulta);
     }
 
     public void agregarPacientesTabla(DefaultTableModel model) {

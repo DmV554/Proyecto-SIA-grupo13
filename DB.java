@@ -5,18 +5,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class DB {
-    private static final String URL = "jdbc:mysql://localhost:3306/proyectosia";
-    private static final String USER = "root";
-    private static final String PASSWORD = "anelaceelfead1712";
+    private static final String URL = "jdbc:mysql://34.172.45.195:3306/proyectosia";
+    private static final String USER = "dmv";
+    private static final String PASSWORD = "123456";
+    private Connection connection;
 
-    public Connection getConnection() {
-        Connection connection = null;
+    public void conectarseADB() {
+        connection = null;
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Connection getConnection() {
         return connection;
     }
 }
-

@@ -6,11 +6,16 @@ public class Paciente {
 
     private ArrayList<ConsultaMedica> consultas;
 
+
     public Paciente(String var1, int var2, String var3) {
         this.nombre = var1;
         this.edad = var2;
         this.rut = var3;
         this.consultas = new ArrayList<>();
+    }
+
+    public boolean esNino() {
+        return false;
     }
 
     public void setNombre(String var1) {
@@ -43,11 +48,14 @@ public class Paciente {
 
 
 
-    public void eliminarConsulta(int index) throws ConsultaNoEncontradaException {
+    public ConsultaMedica eliminarConsulta(int index) throws ConsultaNoEncontradaException {
         if (index < 0 || index >= consultas.size()) {
             throw new ConsultaNoEncontradaException();
         }
+        ConsultaMedica consultaAux = consultas.get(index);
+
         consultas.remove(index);
+        return consultaAux;
     }
 
     public void inicializarConsultas(ArrayList<ConsultaMedica> lista) {

@@ -18,10 +18,11 @@ public class VentanaPrincipal {
     private static final Font LABEL_FONT = new Font("Arial", Font.PLAIN, 16);
     private static final Font BUTTON_FONT = new Font("Arial", Font.BOLD, 16);
     private Sistema sistema = new Sistema();
+    private DB db = new DB();
 
     public VentanaPrincipal() {
-        DB db = new DB();
 
+        db.conectarseADB();
         Connection connection = db.getConnection();
         if(connection != null) {
             System.out.println("Conexión exitosa");
@@ -38,7 +39,7 @@ public class VentanaPrincipal {
                 int edad = resultSet.getInt("edad");
                 Paciente paciente = new Paciente(nombre, edad, rut);
         
-                // Usar un nuevo Statement para la consulta interna
+
                 try (Statement statementConsultas = connection.createStatement()) {
                     ResultSet resultSetConsultas = statementConsultas.executeQuery("SELECT * FROM consultas WHERE rut = '" + rut + "'");
                     while (resultSetConsultas.next()) {
@@ -48,7 +49,7 @@ public class VentanaPrincipal {
                         String hora = resultSetConsultas.getString("hora");
                         String motivo = resultSetConsultas.getString("motivoVisita");
                         String descripcion = resultSetConsultas.getString("descripcion");
-                        ConsultaMedica consulta = new ConsultaMedica(medico, fecha, hora, motivo, descripcion);
+                        ConsultaMedica consulta = new ConsultaMedica(medico, fecha, hora, motivo, descripcion, rut);
                         paciente.agregarConsulta(consulta);
                     }
                 }
@@ -73,7 +74,7 @@ public class VentanaPrincipal {
         frame.add(createButtonPanel("Eliminar paciente", e -> abrirDialogoEliminarPaciente()));
         frame.add(createButtonPanel("Crear consulta a paciente", e -> abrirDialogoAgregaConsulta()));
         frame.add(createButtonPanel("Mostrar consulta médica", e -> abrirDialogoMostrarConsultas()));
-        frame.add(createButtonPanel("Editar consulta", e -> abrirDialogoBuscarPacienteParaEditarConsulta()));
+        frame.add(createButtonPanel("Editar o eliminar consulta", e -> abrirDialogoBuscarPacienteParaEditarConsulta()));
         frame.add(createButtonPanel("Búsqueda avanzada", e -> abrirDialogoBusquedaAvanzadaConTabla()));
         frame.add(createButtonPanel("Salir del sistema", e -> System.exit(0)));
 
@@ -143,17 +144,21 @@ public class VentanaPrincipal {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Crear componentes
+
         JTextField txtNombre = createTextField(15);
         JTextField txtEdad = createTextField(15);
         JTextField txtRut = createTextField(15);
 
-        // Agregar componentes al panel
+
         addToPanel(panel, "Nombre:", txtNombre, gbc, 0);
         addToPanel(panel, "Edad:", txtEdad, gbc, 1);
         addToPanel(panel, "RUT:", txtRut, gbc, 2);
 
         JButton btnGuardar = createButton("Guardar", BUTTON_FONT);
+
+
+        final Connection connection = db.getConnection();
+
         btnGuardar.addActionListener(e -> {
             try {
                 String rut = txtRut.getText();
@@ -177,10 +182,51 @@ public class VentanaPrincipal {
 
                 int edad = Integer.parseInt(strEdad);
 
-                DB database = new DB();
-                final Connection connection = database.getConnection();
+                Paciente nuevoPaciente;
+                if (edad < 15) {
+                    nuevoPaciente = new PacienteNino(nombre, edad, rut);
+                } else if(nombre.contains("*")) {
+                    nuevoPaciente = new PacienteEmergencia(nombre,edad, rut);
 
-                Paciente nuevoPaciente = new Paciente(nombre, edad, rut);
+
+                    JDialog emergenciaDialog = createDialog("Consulta de Emergencia", 400, 400);
+                    JPanel emergenciaPanel = new JPanel(new GridBagLayout());
+                    GridBagConstraints gbcEmergencia = new GridBagConstraints();
+                    gbcEmergencia.insets = new Insets(10, 10, 10, 10);
+
+
+                    JTextField txtHora = createTextField(15);
+                    JTextField txtFecha = createTextField(15);
+                    JTextField txtDescripcion = createTextField(15);
+
+
+                    addToPanel(emergenciaPanel, "Hora:", txtHora, gbcEmergencia, 0);
+                    addToPanel(emergenciaPanel, "Fecha:", txtFecha, gbcEmergencia, 1);
+                    addToPanel(emergenciaPanel, "Descripción:", txtDescripcion, gbcEmergencia, 2);
+
+                    JButton btnGuardarEmergencia = createButton("Guardar", BUTTON_FONT);
+                    btnGuardarEmergencia.addActionListener(a -> {
+                        String hora = txtHora.getText();
+                        String fecha = txtFecha.getText();
+                        String descripcion = txtDescripcion.getText();
+
+                        ConsultaMedica consultaEmergencia = new ConsultaMedica("Emergencia", hora, fecha, "Emergencia: " ,descripcion, rut);
+
+                        nuevoPaciente.agregarConsulta(consultaEmergencia);
+
+                        try {
+                            sistema.agregarConsulta(connection, consultaEmergencia, nuevoPaciente);
+
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+                        emergenciaDialog.dispose();
+                    });
+
+                } else nuevoPaciente = new Paciente(nombre, edad, rut);
+
+
                 try {
                     sistema.agregarPaciente(connection, nuevoPaciente);
                 } catch (SQLException ex) {
@@ -189,7 +235,7 @@ public class VentanaPrincipal {
 
                 dialog.dispose();
 
-            } catch (CamposVaciosException  ex) {
+            } catch (CamposVaciosException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese una edad válida", "Error", JOptionPane.ERROR_MESSAGE);
@@ -205,6 +251,7 @@ public class VentanaPrincipal {
         dialog.add(panel);
         dialog.setVisible(true);
     }
+
 
 
     public void abrirDialogoMostrarPacientes() {
@@ -248,8 +295,8 @@ public class VentanaPrincipal {
         btnEliminar.addActionListener(e -> {
             String rut = txtRut.getText();
             try {
-                DB database = new DB();
-                final Connection connection = database.getConnection();
+
+                final Connection connection = db.getConnection();
                 Paciente paciente = sistema.buscarPaciente(rut);
                 sistema.eliminarPaciente(connection,rut);
                 dialog.dispose();
@@ -272,7 +319,7 @@ public class VentanaPrincipal {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Crear componentes
+
         JTextField txtRut = createTextField(15);
         JTextField txtMedico = createTextField(15);
         JTextField txtFecha = createTextField(15);
@@ -280,7 +327,7 @@ public class VentanaPrincipal {
         JTextField txtMotivo = createTextField(15);
         JTextField txtDescripcion = createTextField(15);
 
-        // Agregar componentes al panel
+
         addToPanel(panel, "RUT del paciente:", txtRut, gbc, 0);
         addToPanel(panel, "Médico:", txtMedico, gbc, 1);
         addToPanel(panel, "Fecha:", txtFecha, gbc, 2);
@@ -291,14 +338,26 @@ public class VentanaPrincipal {
         JButton btnGuardar = createButton("Guardar", BUTTON_FONT);
         btnGuardar.addActionListener(e -> {
             String rut = txtRut.getText();
-            ConsultaMedica nuevaConsulta = new ConsultaMedica(txtMedico.getText(), txtFecha.getText(), txtHora.getText(), txtMotivo.getText(), txtDescripcion.getText());
-            DB database = new DB();
-            final Connection connection = database.getConnection();
+            ConsultaMedica nuevaConsulta = new ConsultaMedica(txtMedico.getText(), txtFecha.getText(), txtHora.getText(), txtMotivo.getText(), txtDescripcion.getText(), rut);
+
+
+            final Connection connection = db.getConnection();
 
             try {
-                sistema.buscarPaciente(rut).agregarConsulta(nuevaConsulta);
-                sistema.agregarConsulta(connection,nuevaConsulta, new Paciente("", 0, rut));
+                Paciente paciente = sistema.buscarPaciente(rut);
+
+                if (paciente.getEdad() < 15) {
+                    int confirmacion = JOptionPane.showConfirmDialog(null, "¿El paciente niño tiene autorización del tutor?", "Confirmación", JOptionPane.YES_NO_OPTION);
+                    if (confirmacion != JOptionPane.YES_OPTION) {
+                        JOptionPane.showMessageDialog(null, "No se pudo guardar la consulta debido a que no tenía autorización del tutor", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+
+                paciente.agregarConsulta(nuevaConsulta);
+                sistema.agregarConsulta(connection, nuevaConsulta, paciente);
                 dialog.dispose();
+
             } catch (PacienteNoEncontradoException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (SQLException ex) {
@@ -334,7 +393,7 @@ public class VentanaPrincipal {
         panelSuperior.add(lblRutValor);
         dialog.add(panelSuperior, BorderLayout.NORTH);
 
-        String[] columnNames = {"Médico", "Fecha", "Hora", "Motivo", "Descripción"};
+        String[] columnNames = {"Médico", "Fecha", "Hora", "Motivo", "Descripción", "RUT asociado"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         JTable table = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -363,7 +422,7 @@ public class VentanaPrincipal {
                 Paciente paciente = sistema.buscarPaciente(rut);
                 lblRutValor.setText("RUT ingresado: " + rut);
 
-                model.setRowCount(0);  // Limpiar la tabla
+                model.setRowCount(0);
 
                 ArrayList<ConsultaMedica> consultasPaciente = new ArrayList<>();
                 paciente.inicializarConsultas(consultasPaciente);
@@ -374,7 +433,8 @@ public class VentanaPrincipal {
                             consulta.getHora(),
                             consulta.getFecha(),
                             consulta.getMotivoVisita(),
-                            consulta.getDescripcion()
+                            consulta.getDescripcion(),
+                            consulta.getRutAsociado()
                     };
                     model.addRow(rowData);
                 }
@@ -411,7 +471,7 @@ public class VentanaPrincipal {
 
         dialog.add(lblRut);
         dialog.add(txtRut);
-        dialog.add(new JLabel());  // Espacio vacío
+        dialog.add(new JLabel());
         dialog.add(btnBuscar);
         dialog.setVisible(true);
     }
@@ -428,7 +488,7 @@ public class VentanaPrincipal {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;  // Esto hace que ninguna celda sea editable
+                return false;
             }
         };
 
@@ -461,11 +521,11 @@ public class VentanaPrincipal {
                 int confirm = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar esta consulta?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     try {
-                        paciente.eliminarConsulta(selectedRow);
+                        ConsultaMedica consultaAux = paciente.eliminarConsulta(selectedRow);
+                        sistema.eliminarConsulta(consultaAux);
+
                     } catch (ConsultaNoEncontradaException ex) {
                         JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
                     }
                     model.removeRow(selectedRow);
                 }
@@ -519,19 +579,19 @@ public class VentanaPrincipal {
         dialog.add(txtMotivo);
         dialog.add(new JLabel("Descripción:"));
         dialog.add(txtDescripcion);
-        dialog.add(new JLabel());  // Espacio vacío
+        dialog.add(new JLabel());
         dialog.add(btnGuardar);
 
         dialog.setVisible(true);
     }
 
     public void actualizarTablaEditarConsultas(DefaultTableModel model, Paciente paciente) {
-        // Limpiar el modelo
+
         model.setRowCount(0);
         ArrayList<ConsultaMedica> consultas = new ArrayList<>();
         paciente.inicializarConsultas(consultas);
 
-        // Agregar las filas actualizadas
+
         for (ConsultaMedica consulta : consultas) {
             Object[] rowData = {consulta.getMedico(), consulta.getFecha(), consulta.getHora(), consulta.getMotivoVisita()};
             model.addRow(rowData);
@@ -544,7 +604,7 @@ public class VentanaPrincipal {
         dialog.setSize(600, 500);
         dialog.setLayout(new BorderLayout());
 
-        // Panel superior para criterios de búsqueda
+
         JPanel panelBusqueda = new JPanel(new GridLayout(3, 2));
 
         JLabel lblNombre = new JLabel("Nombre del paciente:");
@@ -559,17 +619,17 @@ public class VentanaPrincipal {
         panelBusqueda.add(txtNombre);
         panelBusqueda.add(lblEdad);
         panelBusqueda.add(txtEdad);
-        panelBusqueda.add(new JLabel());  // Espacio vacío
+        panelBusqueda.add(new JLabel());
         panelBusqueda.add(btnBuscar);
 
         dialog.add(panelBusqueda, BorderLayout.NORTH);
 
-        // Tabla para mostrar resultados
+
         String[] columnNames = {"Nombre", "Edad", "RUT"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;  // Esto hace que ninguna celda sea editable
+                return false;
             }
         };
 
@@ -585,7 +645,7 @@ public class VentanaPrincipal {
             try {
                 edadMinima = Integer.parseInt(txtEdad.getText());
             } catch (NumberFormatException ex) {
-                // No se ingresó una edad válida
+
             }
             actualizarTablaConCriterio(nombre, edadMinima, table);
         });
@@ -595,7 +655,7 @@ public class VentanaPrincipal {
 
     public void actualizarTablaConCriterio(String nombre, int edadMinima, JTable table) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0);  // Limpia la tabla
+        model.setRowCount(0);
 
         ArrayList<Paciente> pacientes = sistema.obtenerPacientesPorCriterio(nombre, edadMinima);
         for (Paciente paciente : pacientes) {
@@ -605,6 +665,3 @@ public class VentanaPrincipal {
     }
 
 }
-
-
-
