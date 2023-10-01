@@ -248,12 +248,15 @@ public class VentanaPrincipal {
         btnEliminar.addActionListener(e -> {
             String rut = txtRut.getText();
             try {
-
+                DB database = new DB();
+                final Connection connection = database.getConnection();
                 Paciente paciente = sistema.buscarPaciente(rut);
-                sistema.eliminarPaciente(rut);
+                sistema.eliminarPaciente(connection,rut);
                 dialog.dispose();
             } catch (PacienteNoEncontradoException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
             }
         });
         addToPanel(panel, "", btnEliminar, gbc, 1);
@@ -461,6 +464,8 @@ public class VentanaPrincipal {
                         paciente.eliminarConsulta(selectedRow);
                     } catch (ConsultaNoEncontradaException ex) {
                         JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
                     }
                     model.removeRow(selectedRow);
                 }

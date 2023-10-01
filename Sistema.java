@@ -36,9 +36,17 @@ public class Sistema {
         }
         return mapaPacientes.containsKey(rutBuscado);
     }
-    public void eliminarPaciente(String rutEliminar) {
-        if(mapaPacientes.containsKey(rutEliminar)) {
+    public void eliminarPaciente(Connection connection, String rutEliminar) throws SQLException {
+
+        if (mapaPacientes.containsKey(rutEliminar)) {
             mapaPacientes.remove(rutEliminar);
+        }
+
+        String sql = "DELETE FROM pacientes WHERE rut = ?"; // Asume que la columna que contiene el RUT se llama 'rut'
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, rutEliminar);
+            preparedStatement.executeUpdate();
         }
     }
 
