@@ -68,12 +68,11 @@ public class ConsultaMedica {
     }
 
     public int getId(Connection connection) throws SQLException {
-        String sql = "SELECT idConsulta FROM consultas WHERE RUT = ? AND hora = ? AND fecha = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, rutAsociado);
-            preparedStatement.setString(2, hora);
-            preparedStatement.setString(3, fecha);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        String sql = "SELECT idConsulta FROM consultas WHERE RUT = ? AND fecha = ?";
+        try (PreparedStatement preparedStatement2 = connection.prepareStatement(sql)) {
+            preparedStatement2.setString(1, rutAsociado);
+            preparedStatement2.setString(2, fecha);
+            try (ResultSet resultSet = preparedStatement2.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt("idConsulta");
                 } else {
