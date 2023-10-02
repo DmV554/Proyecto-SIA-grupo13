@@ -120,16 +120,27 @@ public class Sistema {
         String rutaArchivoCSV = "pacientes.csv";
 
         try (CSVWriter csvWriter = new CSVWriter(new FileWriter(rutaArchivoCSV))) {
-            // Crea una matriz para representar la fila de encabezado
+
             String[] encabezado = {"Nombre", "Edad", "Rut", "Medico", "Hora", "Fecha", "MotivoVisita", "Descripcion", "RutAsociado"};
-            csvWriter.writeNext(encabezado); // Escribe la fila de encabezado
+            csvWriter.writeNext(encabezado);
 
             for (Paciente paciente : mapaPacientes.values()) {
                 ArrayList<ConsultaMedica> consultasPaciente = new ArrayList<>();
                 paciente.inicializarConsultas(consultasPaciente);
 
+
+                if (consultasPaciente.isEmpty()) {
+                    String[] lineaCSVSinConsulta = {
+                            paciente.getNombre(),
+                            String.valueOf(paciente.getEdad()),
+                            paciente.getRut(),
+                            "", "", "", "", "", ""
+                    };
+                    csvWriter.writeNext(lineaCSVSinConsulta);
+                }
+
                 for (ConsultaMedica consulta : consultasPaciente) {
-                    // Crea un arreglo de strings con los datos de paciente y consulta
+
                     String[] lineaCSV = {
                             paciente.getNombre(),
                             String.valueOf(paciente.getEdad()),
@@ -142,12 +153,13 @@ public class Sistema {
                             consulta.getRutAsociado()
                     };
 
-                    // Escribe la línea en el archivo CSV
+
                     csvWriter.writeNext(lineaCSV);
                 }
             }
 
             System.out.println("Archivo CSV generado correctamente.");
+            System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
