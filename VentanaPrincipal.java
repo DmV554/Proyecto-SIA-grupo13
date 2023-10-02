@@ -567,6 +567,16 @@ public class VentanaPrincipal {
             consulta.setMotivoVisita(txtMotivo.getText());
             consulta.setDescripcion(txtDescripcion.getText());
             actualizarTablaEditarConsultas(model, paciente);
+
+            try {
+                final Connection connection = db.getConnection();
+                paciente.actualizarConsulta(connection, consulta, txtMedico.getText(), txtHora.getText(), txtFecha.getText(), txtMotivo.getText());
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            } catch (ConsultaNoEncontradaException e1) {
+                e1.printStackTrace();
+            }
+
             dialog.dispose();
         });
 

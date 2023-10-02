@@ -75,4 +75,24 @@ public class Paciente {
             lista.add(consulta);
         }
     }
+
+    public void actualizarConsulta(Connection connection, ConsultaMedica consulta, String nuevoMedico, String nuevaFecha, String nuevaHora, String nuevoMotivo) throws ConsultaNoEncontradaException, SQLException {
+        int id = consulta.getId(connection);
+
+        String sql = "UPDATE consultas SET medico = ?, fecha = ?, hora = ?, motivo = ? WHERE idConsulta = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, nuevoMedico);
+            preparedStatement.setString(2, nuevaFecha);
+            preparedStatement.setString(3, nuevaHora);
+            preparedStatement.setString(4, nuevoMotivo);
+            preparedStatement.setInt(5, id);
+    
+            int filasActualizadas = preparedStatement.executeUpdate();
+            if (filasActualizadas == 0) {
+                // La consulta no se actualizó, podría ser porque el ID no existe en la base de datos
+                throw new SQLException("La consulta médica con ID " + id + " no se encontró en la base de datos.");
+            }
+        }
+    }
 }
+    
