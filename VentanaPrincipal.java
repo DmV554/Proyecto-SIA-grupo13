@@ -5,12 +5,7 @@ import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
 import java.sql.Statement;
-import java.lang.reflect.Array;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class VentanaPrincipal {
@@ -295,7 +290,6 @@ public class VentanaPrincipal {
         btnEliminar.addActionListener(e -> {
             String rut = txtRut.getText();
             try {
-
                 final Connection connection = db.getConnection();
                 Paciente paciente = sistema.buscarPaciente(rut);
                 sistema.eliminarPaciente(connection,rut);
@@ -517,15 +511,19 @@ public class VentanaPrincipal {
         JButton btnEliminar = new JButton("Eliminar Consulta Seleccionada");
         btnEliminar.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
+            System.out.println(selectedRow);
             if (selectedRow != -1) {
                 int confirm = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar esta consulta?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     try {
-                        ConsultaMedica consultaAux = paciente.eliminarConsulta(selectedRow);
+                        final Connection connection = db.getConnection();
+                        ConsultaMedica consultaAux = paciente.eliminarConsulta(connection, selectedRow);
                         sistema.eliminarConsulta(consultaAux);
 
                     } catch (ConsultaNoEncontradaException ex) {
                         JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
                     }
                     model.removeRow(selectedRow);
                 }

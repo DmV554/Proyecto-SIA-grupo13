@@ -1,3 +1,8 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class ConsultaMedica {
     private String medico;
     private String hora;
@@ -5,6 +10,8 @@ public class ConsultaMedica {
     private String motivoVisita;
     private String descripcion;
     private String rutAsociado;
+    private int id;
+
     public ConsultaMedica(String medico, String hora, String fecha, String motivoVisita, String descripcion, String rutAsociado) {
         this.medico = medico;
         this.hora = hora;
@@ -58,6 +65,23 @@ public class ConsultaMedica {
 
     public String getRutAsociado() {
         return rutAsociado;
+    }
+
+    public int getId(Connection connection) throws SQLException {
+        String sql = "SELECT idConsulta FROM consultas WHERE RUT = ? AND hora = ? AND fecha = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, rutAsociado);
+            preparedStatement.setString(2, hora);
+            preparedStatement.setString(3, fecha);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("idConsulta");
+                } else {
+                    // La consulta no encontró ningún resultado, debes manejar este caso adecuadamente
+                    throw new SQLException("No se encontró.");
+                }
+            }
+        }
     }
 
 }

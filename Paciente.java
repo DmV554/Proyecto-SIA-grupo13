@@ -1,4 +1,8 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
+
 public class Paciente {
     private String nombre;
     private int edad;
@@ -46,15 +50,20 @@ public class Paciente {
         consultas.add(consultaMedica);
     }
 
-
-
-    public ConsultaMedica eliminarConsulta(int index) throws ConsultaNoEncontradaException {
+    public ConsultaMedica eliminarConsulta(Connection connection, int index) throws ConsultaNoEncontradaException, SQLException {
         if (index < 0 || index >= consultas.size()) {
             throw new ConsultaNoEncontradaException();
         }
         ConsultaMedica consultaAux = consultas.get(index);
-
+        System.out.println(consultaAux.getId(connection));
         consultas.remove(index);
+
+        String sql = "DELETE FROM consultas WHERE idConsulta = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, consultaAux.getId(connection));
+            preparedStatement.executeUpdate();
+        }
+
         return consultaAux;
     }
 

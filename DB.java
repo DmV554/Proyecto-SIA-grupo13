@@ -1,8 +1,6 @@
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class DB {
     private static final String URL = "jdbc:mysql://34.172.45.195:3306/proyectosia";
