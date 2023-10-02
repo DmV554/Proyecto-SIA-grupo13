@@ -573,8 +573,8 @@ public class VentanaPrincipal {
                 paciente.actualizarConsulta(connection, consulta, txtMedico.getText(), txtHora.getText(), txtFecha.getText(), txtMotivo.getText());
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
-            } catch (ConsultaNoEncontradaException e1) {
-                e1.printStackTrace();
+            } catch (ConsultaNoEncontradaException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
 
             dialog.dispose();

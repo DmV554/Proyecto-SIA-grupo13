@@ -116,7 +116,7 @@ public class Sistema {
         }
     }
 
-    public void generarCsv() {
+    /*public void generarCsv() {
         String rutaArchivoCSV = "pacientes.csv";
 
         try (CSVWriter csvWriter = new CSVWriter(new FileWriter(rutaArchivoCSV))) {
@@ -151,7 +151,7 @@ public class Sistema {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }
 

@@ -76,7 +76,7 @@ public class Paciente {
         }
     }
 
-    public void actualizarConsulta(Connection connection, ConsultaMedica consulta, String nuevoMedico, String nuevaFecha, String nuevaHora, String nuevoMotivo) throws ConsultaNoEncontradaException, SQLException {
+    public void actualizarConsulta(Connection connection, ConsultaMedica consulta, String nuevoMedico, String nuevaHora, String nuevaFecha, String nuevoMotivo) throws ConsultaNoEncontradaException, SQLException {
         int id = consulta.getId(connection);
 
         String sql = "UPDATE consultas SET medico = ?, fecha = ?, hora = ?, motivo = ? WHERE idConsulta = ?";
