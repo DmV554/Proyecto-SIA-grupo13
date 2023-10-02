@@ -52,14 +52,11 @@ public class Paciente {
 
     public ConsultaMedica eliminarConsulta(Connection connection, int index) throws ConsultaNoEncontradaException, SQLException {
         if (index < 0 || index > consultas.size()) {
-            System.out.println("XDDD");
             throw new ConsultaNoEncontradaException();
         }
         ConsultaMedica consultaAux = consultas.get(index);
         consultas.remove(index);
-        System.out.println("DOU");
         int id = consultaAux.getId(connection);
-        System.out.println("id: " + id);
 
         String sql = "DELETE FROM consultas WHERE idConsulta = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
