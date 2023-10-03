@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
-
+import com.opencsv.CSVWriter;
 public class Sistema {
     private HashMap<String, Paciente> mapaPacientes;
     private ArrayList<ConsultaMedica> listaTodasConsultas;
